@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +14,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container mt-5">
         <h2 class="mb-4">User Form</h2>
@@ -76,16 +78,16 @@
     </div>
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             // Load roles
             $.ajax({
                 url: '/api/roles',
                 method: 'GET',
-                success: function (data) {
+                success: function(data) {
                     console.log('Roles data:', data); // Debugging line
                     let roleOptions = '';
                     if (Array.isArray(data)) {
-                        $.each(data, function (key, role) {
+                        $.each(data, function(key, role) {
                             roleOptions += `<option value="${role.id}">${role.name}</option>`;
                         });
                         $('#role_id').html(roleOptions);
@@ -93,7 +95,7 @@
                         console.error('Roles data is not an array.');
                     }
                 },
-                error: function (xhr, textStatus, errorThrown) {
+                error: function(xhr, textStatus, errorThrown) {
                     console.error('Error fetching roles:', textStatus, errorThrown);
                 }
             });
@@ -129,7 +131,7 @@
             }
 
             // Submit form with validation
-            $('#userForm').on('submit', function (e) {
+            $('#userForm').on('submit', function(e) {
                 e.preventDefault();
 
                 if (!validateForm()) {
@@ -144,11 +146,11 @@
                     data: formData,
                     contentType: false,
                     processData: false,
-                    success: function (response) {
-                       // alert('User added successfully!');
+                    success: function(response) {
+                        // alert('User added successfully!');
                         loadUsers();
                     },
-                    error: function (xhr) {
+                    error: function(xhr) {
                         alert('Error: ' + JSON.stringify(xhr.responseJSON.errors));
                     }
                 });
@@ -159,23 +161,27 @@
                 $.ajax({
                     url: '/api/users',
                     method: 'GET',
-                    success: function (data) {
+                    success: function(data) {
                         console.log('Users data:', data);
                         $('#userTable tbody').empty();
-                        $.each(data, function (key, user) {
+                        $.each(data, function(key, user) {
+                            // Determine the image source
+                            let imageSrc = user.profile_image ?
+                                `/storage/${user.profile_image}` : '/storage/dummy-image.png';
+
                             $('#userTable tbody').append(`
-                                <tr>
-                                    <td>${user.name}</td>
-                                    <td>${user.email}</td>
-                                    <td>${user.phone}</td>
-                                    <td>${user.description}</td>
-                                    <td>${user.role.name}</td>
-                                    <td><img src="/storage/${user.profile_image}" width="50"></td>
-                                </tr>
-                            `);
+                    <tr>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>${user.phone}</td>
+                        <td>${user.description}</td>
+                        <td>${user.role.name}</td>
+                        <td><img src="${imageSrc}" width="50" alt="Profile Image"></td>
+                    </tr>
+                `);
                         });
                     },
-                    error: function (xhr, textStatus, errorThrown) {
+                    error: function(xhr, textStatus, errorThrown) {
                         console.error('Error fetching users:', textStatus, errorThrown);
                     }
                 });
@@ -185,4 +191,5 @@
         });
     </script>
 </body>
+
 </html>
