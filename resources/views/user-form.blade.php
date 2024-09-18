@@ -145,7 +145,7 @@
                     contentType: false,
                     processData: false,
                     success: function (response) {
-                        alert('User added successfully!');
+                       // alert('User added successfully!');
                         loadUsers();
                     },
                     error: function (xhr) {
